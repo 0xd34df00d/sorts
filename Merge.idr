@@ -3,11 +3,10 @@ module Merge
 import Data.List.Views
 import Data.So
 
+import Order
+
 %hide merge
 %default total
-
-Order : Type -> Type
-Order a = a -> a -> Bool
 
 merge : (f : Order a) -> (xs, ys : List a) -> List a
 merge f xs [] = xs
