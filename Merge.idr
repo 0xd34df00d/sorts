@@ -18,6 +18,14 @@ merge f (x :: xs) (y :: ys) = case choose $ x `f` y of
                                    Left _   => x :: merge f xs (y :: ys)
                                    Right _  => y :: merge f (x :: xs) ys
 
+mergeSort' : (f : Order a) -> (xs : List a) -> SplitRec xs -> List a
+mergeSort' f [] SplitRecNil = []
+mergeSort' f [x] SplitRecOne = [x]
+mergeSort' f (lefts ++ rights) (SplitRecPair lrec rrec) = merge f (mergeSort' f lefts lrec ) (mergeSort' f rights rrec)
+
+mergeSort : (f : Order a) -> (xs : List a) -> List a
+mergeSort f xs = mergeSort' f xs (splitRec xs)
+
 -- Proofs
 
 mergeLeftEmptyId : (f : Order a) -> (ys : List a) -> merge f [] ys = ys
