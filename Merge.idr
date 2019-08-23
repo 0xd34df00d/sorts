@@ -74,3 +74,14 @@ mutual
   mergeIsOrdered {f} {xs = x0 :: x1 :: xs} {ys = y :: ys} ftotal (ConsOrderedList {prf} f x0 xrest) ysinc with (choose $ x0 `f` y)
     | Left x0_f_y       = mergeIsOrdered_x0_leq_y ftotal x0_f_y prf xrest ysinc
     | Right not_x0_f_y  = mergeIsOrdered_x0_geq_y ftotal (ftotal not_x0_f_y) (ConsOrderedList f x0 xrest) ysinc
+
+mergeSort'IsOrdered : (f : Order a) -> (ftotal : Totality f) -> (xs : List a) -> (s : SplitRec xs) -> OrderedList f (mergeSort' f xs s)
+mergeSort'IsOrdered f ftotal [] SplitRecNil = EmptyList
+mergeSort'IsOrdered f ftotal [x] SplitRecOne = SingleList x
+mergeSort'IsOrdered f ftotal (lefts ++ rights) (SplitRecPair lrec rrec) =
+    let lInc = mergeSort'IsOrdered f ftotal lefts lrec
+        rInc = mergeSort'IsOrdered f ftotal rights rrec
+    in mergeIsOrdered ftotal lInc rInc
+
+mergeSortIsOrdered : (f : Order a) -> (ftotal : Totality f) -> (xs : List a) -> OrderedList f (mergeSort f xs)
+mergeSortIsOrdered f ftotal xs = mergeSort'IsOrdered f ftotal xs (splitRec xs)
