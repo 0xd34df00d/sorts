@@ -35,3 +35,12 @@ nilPerm (PTrans p1 p2) = case nilPerm p2 of Refl => nilPerm p1
 permSingleton : Perm xs [x] -> xs = [x]
 permSingleton (PRest rest) = rewrite nilPerm rest in Refl
 permSingleton (PTrans p1 p2) = case permSingleton p2 of Refl => permSingleton p1
+
+permPreservesElem : Perm xs ys -> (elPrf : Elem elt xs) -> Elem elt ys
+permPreservesElem PNil x = x
+permPreservesElem PSwap Here = There Here
+permPreservesElem PSwap (There Here) = Here
+permPreservesElem PSwap (There (There later)) = There (There later)
+permPreservesElem (PRest rest) Here = Here
+permPreservesElem (PRest rest) (There later) = There (permPreservesElem rest later)
+permPreservesElem (PTrans p1 p2) elPrf = permPreservesElem p2 $ permPreservesElem p1 elPrf

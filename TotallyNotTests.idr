@@ -1,5 +1,7 @@
 module TotalyNotTests
 
+import Data.List
+
 import Perm
 
 yes1 : Perm [] []
@@ -31,3 +33,12 @@ no1 (PTrans p1 p2) = case nilPerm (permSym p1) of Refl => no1 p2
 
 no2 : Perm [2] [3] -> Void
 no2 (PTrans p1 p2) = case permSingleton p2 of Refl => no2 p1
+
+no3 : Perm [1, 2] [1, 3] -> Void
+no3 p = let twoIn12 = the (Elem 2 [1, 2]) (There Here)
+            twoIn13 = permPreservesElem p twoIn12
+        in myAbsurdity twoIn13
+  where
+    myAbsurdity : Elem 2 [1, 3] -> Void
+    myAbsurdity (There (There Here)) impossible
+    myAbsurdity (There (There (There _))) impossible
