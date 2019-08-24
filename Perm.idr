@@ -31,3 +31,7 @@ permTrans x y = PTrans x y
 nilPerm : Perm xs [] -> xs = []
 nilPerm PNil = Refl
 nilPerm (PTrans p1 p2) = case nilPerm p2 of Refl => nilPerm p1
+
+permSingleton : Perm xs [x] -> xs = [x]
+permSingleton (PRest rest) = rewrite nilPerm rest in Refl
+permSingleton (PTrans p1 p2) = case permSingleton p2 of Refl => permSingleton p1

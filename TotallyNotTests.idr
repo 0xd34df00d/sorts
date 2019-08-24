@@ -28,3 +28,6 @@ yes8 = let sub = yes7 in PTrans sub (PRest PSwap)
 
 no1 : Perm [] [1] -> Void
 no1 (PTrans p1 p2) = case nilPerm (permSym p1) of Refl => no1 p2
+
+no2 : Perm [2] [3] -> Void
+no2 (PTrans p1 p2) = case permSingleton p2 of Refl => no2 p1
