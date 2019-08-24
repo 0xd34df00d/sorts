@@ -25,3 +25,6 @@ yes7 = PTrans PSwap (PRest (PRest PSwap))
 
 yes8 : Perm [0, 1, 2, 3] [1, 3, 0, 2]
 yes8 = let sub = yes7 in PTrans sub (PRest PSwap)
+
+no1 : Perm [] [1] -> Void
+no1 (PTrans p1 p2) = case nilPerm (permSym p1) of Refl => no1 p2

@@ -27,3 +27,7 @@ permSym (PTrans p1 p2) = let p1' = permSym p1
 
 permTrans : Perm xs ys -> Perm ys zs -> Perm xs zs
 permTrans x y = PTrans x y
+
+nilPerm : Perm xs [] -> xs = []
+nilPerm PNil = Refl
+nilPerm (PTrans p1 p2) = case nilPerm p2 of Refl => nilPerm p1
