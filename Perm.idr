@@ -44,3 +44,26 @@ permPreservesElem PSwap (There (There later)) = There (There later)
 permPreservesElem (PRest rest) Here = Here
 permPreservesElem (PRest rest) (There later) = There (permPreservesElem rest later)
 permPreservesElem (PTrans p1 p2) elPrf = permPreservesElem p2 $ permPreservesElem p1 elPrf
+
+permHeadElem : DecEq a => (x : a) -> (xs, ys : List a) -> Perm (x :: xs) ys -> Elem x ys
+permHeadElem x xs ys p = permPreservesElem p Here
+
+permTail : (tail : List a) -> Perm xs ys -> Perm (xs ++ tail) (ys ++ tail)
+permTail tail PNil = permRefl tail
+permTail tail PSwap = PSwap
+permTail tail (PRest rest) = PRest $ permTail tail rest
+permTail tail (PTrans p1 p2) = let rec1 = permTail tail p1
+                                   rec2 = permTail tail p2
+                               in PTrans rec1 rec2
+
+permHeadLast : (y : a) -> (xs : List a) -> Perm (y :: xs) (xs ++ [y])
+permHeadLast y [] = PRest PNil
+permHeadLast y (x :: xs) = let rec = permHeadLast y xs
+                               x_y_xs = PRest {x} rec
+                               swapped = PSwap {x0 = y} {x1 = x} {xs}
+                           in PTrans swapped x_y_xs
+
+permSwapMid : (y : a) -> (xs, ys : List a) -> Perm (y :: xs ++ ys) (xs ++ y :: ys)
+permSwapMid y xs ys = let headLast = permHeadLast y xs
+                      in rewrite appendAssociative xs [y] ys
+                      in permTail ys headLast
