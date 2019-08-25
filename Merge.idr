@@ -5,6 +5,7 @@ import Data.So
 
 import Order
 import OrderedList
+import Perm
 
 %hide merge
 %default total
@@ -31,6 +32,19 @@ mergeSort f xs = mergeSort' f xs (splitRec xs)
 mergeLeftEmptyId : (f : Order a) -> (ys : List a) -> merge f [] ys = ys
 mergeLeftEmptyId f [] = Refl
 mergeLeftEmptyId f (x :: xs) = Refl
+
+-- Merge is a permutation
+
+mergeIsPerm : (f : Order a) -> (xs, ys : List a) -> Perm (merge f xs ys) (xs ++ ys)
+mergeIsPerm f [] ys = rewrite mergeLeftEmptyId f ys in permRefl ys
+mergeIsPerm f xs [] = rewrite appendNilRightNeutral xs in permRefl xs
+mergeIsPerm f (x :: xs) (y :: ys) with (choose $ x `f` y)
+  | Left _ = PRest $ mergeIsPerm f xs (y :: ys)
+  | Right _ = let restPerm = PRest {x = y} $ mergeIsPerm f (x :: xs) ys
+                  permMid' = permSwapMid y (x :: xs) ys
+              in PTrans restPerm permMid'
+
+-- Merge produces an ordered list
 
 mutual
   mergeIsOrdered_single_x : (ftotal : Totality f) ->
