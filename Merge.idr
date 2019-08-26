@@ -63,9 +63,9 @@ mergeSortIsPerm f xs = mergeSort'IsPerm f xs (splitRec xs)
 
 mutual
   mergeIsOrdered_single_x : (ftotal : Totality f) ->
-														(x : a) -> (f_y_x : So (f y x)) ->
-														(ysinc : OrderedList f (y :: ys)) ->
-														OrderedList f (y :: (merge f [x] ys))
+                            (x : a) -> (f_y_x : So (f y x)) ->
+                            (ysinc : OrderedList f (y :: ys)) ->
+                            OrderedList f (y :: (merge f [x] ys))
   mergeIsOrdered_single_x {f} _ x f_y_x (SingleList y) = ConsOrderedList f y (SingleList x)
   mergeIsOrdered_single_x {f} {ys = y1 :: ys} ftotal x f_y_x (ConsOrderedList f y0 yrest) with (mergeIsOrdered ftotal (SingleList x) yrest)
     | rest with (choose $ x `f` y1)
@@ -73,18 +73,18 @@ mutual
       | Right _ = ConsOrderedList f y0 rest
 
   mergeIsOrdered_x0_leq_y : (ftotal : Totality f) ->
-														(x0_f_y : So (x0 `f` y)) -> (x0_f_x1 : So (x0 `f` x1)) ->
+                            (x0_f_y : So (x0 `f` y)) -> (x0_f_x1 : So (x0 `f` x1)) ->
                             (xrest : OrderedList f (x1 :: xs)) -> (ysinc : OrderedList f (y :: ys)) ->
-														OrderedList f (x0 :: merge f (x1 :: xs) (y :: ys))
+                            OrderedList f (x0 :: merge f (x1 :: xs) (y :: ys))
   mergeIsOrdered_x0_leq_y {f} {x1} {y} {x0} ftotal x0_f_y x0_f_x1 xrest ysinc with (mergeIsOrdered ftotal xrest ysinc)
     | rest with (choose $ x1 `f` y)
       | Left _  = ConsOrderedList f x0 rest
       | Right _ = ConsOrderedList f x0 rest
 
   mergeIsOrdered_x0_geq_y : (ftotal : Totality f) ->
-														(y_f_x0 : So (y0 `f` x0)) ->
+                            (y_f_x0 : So (y0 `f` x0)) ->
                             (xsinc : OrderedList f (x0 :: xs)) -> (ysinc : OrderedList f (y0 :: ys)) ->
-														OrderedList f (y0 :: merge f (x0 :: xs) ys)
+                            OrderedList f (y0 :: merge f (x0 :: xs) ys)
   mergeIsOrdered_x0_geq_y {f} ftotal y_f_x0 xsinc (SingleList y0) = ConsOrderedList f y0 xsinc
   mergeIsOrdered_x0_geq_y {x0} ftotal y_f_x0 xsinc (ConsOrderedList {prf} {x1} f y0 yrest) with (mergeIsOrdered ftotal xsinc yrest)
     | rest with (choose $ x0 `f` x1)
