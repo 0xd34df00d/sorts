@@ -6,6 +6,7 @@ import Data.So
 import Order
 import OrderedList
 import Perm
+import Sorted
 
 %hide merge
 %default total
@@ -113,3 +114,6 @@ mergeSort'IsOrdered f ftotal (lefts ++ rights) (SplitRecPair lrec rrec) =
 
 mergeSortIsOrdered : (f : Order a) -> (ftotal : Totality f) -> (xs : List a) -> OrderedList f (mergeSort f xs)
 mergeSortIsOrdered f ftotal xs = mergeSort'IsOrdered f ftotal xs (splitRec xs)
+
+mergeSortIsASort : (f : Order a) -> (ftotal : Totality f) -> (xs : List a) -> Sorted f xs (mergeSort f xs)
+mergeSortIsASort f ftotal xs = MkSorted (mergeSortIsPerm f xs) (mergeSortIsOrdered f ftotal xs)
