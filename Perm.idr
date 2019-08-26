@@ -67,3 +67,16 @@ permSwapMid : (y : a) -> (xs, ys : List a) -> Perm (y :: xs ++ ys) (xs ++ y :: y
 permSwapMid y xs ys = let headLast = permHeadLast y xs
                       in rewrite appendAssociative xs [y] ys
                       in permTail ys headLast
+
+permHead : (x : a) -> Perm xs pxs -> Perm (x :: xs) (x :: pxs)
+permHead x PNil = PRest PNil
+permHead x PSwap = PRest PSwap
+permHead x (PRest rest) = PRest (PRest rest)
+permHead x (PTrans p1 p2) = PRest (PTrans p1 p2)
+
+permPrepend : (xs : List a) -> Perm ys pys -> Perm (xs ++ ys) (xs ++ pys)
+permPrepend [] p = p
+permPrepend (x :: xs) p = permHead x $ permPrepend xs p
+
+permConcat : Perm xs pxs -> Perm ys pys -> Perm (xs ++ ys) (pxs ++ pys)
+permConcat {xs} {pys} p1 p2 = permPrepend xs p2 `PTrans` permTail pys p1
