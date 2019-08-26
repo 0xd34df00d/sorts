@@ -44,6 +44,20 @@ mergeIsPerm f (x :: xs) (y :: ys) with (choose $ x `f` y)
                   permMid' = permSwapMid y (x :: xs) ys
               in PTrans restPerm permMid'
 
+mergeSort'IsPerm : (f : Order a) -> (xs : List a) -> (s : SplitRec xs) -> Perm (mergeSort' f xs s) xs
+mergeSort'IsPerm f [] SplitRecNil = PNil
+mergeSort'IsPerm f [x] SplitRecOne = PRest PNil
+mergeSort'IsPerm f (lefts ++ rights) (SplitRecPair lrec rrec) =
+  let
+    leftSubperm = mergeSort'IsPerm f lefts lrec
+    rightSubperm = mergeSort'IsPerm f rights rrec
+    mergePerm = mergeIsPerm f (mergeSort' f lefts lrec) (mergeSort' f rights rrec)
+    concatPerm = permConcat leftSubperm rightSubperm
+  in PTrans mergePerm concatPerm
+
+mergeSortIsPerm : (f : Order a) -> (xs : List a) -> Perm (mergeSort f xs) xs
+mergeSortIsPerm f xs = mergeSort'IsPerm f xs (splitRec xs)
+
 -- Merge produces an ordered list
 
 mutual
