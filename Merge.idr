@@ -36,7 +36,7 @@ mergeLeftEmptyId f (x :: xs) = Refl
 
 -- Merge is a permutation
 
-mergeIsPerm : (f : Order a) -> (xs, ys : List a) -> Perm (merge f xs ys) (xs ++ ys)
+mergeIsPerm : (f : Order a) -> (xs, ys : List a) -> merge f xs ys ~~ xs ++ ys
 mergeIsPerm f [] ys = rewrite mergeLeftEmptyId f ys in permRefl ys
 mergeIsPerm f xs [] = rewrite appendNilRightNeutral xs in permRefl xs
 mergeIsPerm f (x :: xs) (y :: ys) with (choose $ x `f` y)
@@ -45,7 +45,7 @@ mergeIsPerm f (x :: xs) (y :: ys) with (choose $ x `f` y)
                   permMid' = permSwapMid y (x :: xs) ys
               in PTrans restPerm permMid'
 
-mergeSort'IsPerm : (f : Order a) -> (xs : List a) -> (s : SplitRec xs) -> Perm (mergeSort' f xs s) xs
+mergeSort'IsPerm : (f : Order a) -> (xs : List a) -> (s : SplitRec xs) -> mergeSort' f xs s ~~ xs
 mergeSort'IsPerm f [] SplitRecNil = PNil
 mergeSort'IsPerm f [x] SplitRecOne = PRest PNil
 mergeSort'IsPerm f (lefts ++ rights) (SplitRecPair lrec rrec) =
@@ -56,7 +56,7 @@ mergeSort'IsPerm f (lefts ++ rights) (SplitRecPair lrec rrec) =
     concatPerm = permConcat leftSubperm rightSubperm
   in PTrans mergePerm concatPerm
 
-mergeSortIsPerm : (f : Order a) -> (xs : List a) -> Perm (mergeSort f xs) xs
+mergeSortIsPerm : (f : Order a) -> (xs : List a) -> mergeSort f xs ~~ xs
 mergeSortIsPerm f xs = mergeSort'IsPerm f xs (splitRec xs)
 
 -- Merge produces an ordered list
