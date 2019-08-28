@@ -35,10 +35,7 @@ no2 : [2] ~~ [3] -> Void
 no2 (PTrans p1 p2) = case permSingleton p2 of Refl => no2 p1
 
 no3 : [1, 2] ~~ [1, 3] -> Void
-no3 p = let twoIn12 = the (Elem 2 [1, 2]) (There Here)
+no3 p = let twoIn12 = There Here
             twoIn13 = permPreservesElem p twoIn12
-        in myAbsurdity twoIn13
-  where
-    myAbsurdity : Elem 2 [1, 3] -> Void
-    myAbsurdity (There (There Here)) impossible
-    myAbsurdity (There (There (There _))) impossible
+        in case twoIn13 of
+                There (There later) => absurd later
