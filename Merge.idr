@@ -10,6 +10,7 @@ import Sorted
 
 %hide merge
 %default total
+%access public export
 
 -- Merge sort
 
