@@ -2,7 +2,9 @@ module ExampleOrder
 
 import Data.So
 
+import Merge
 import Order
+import Sorted
 
 %default total
 
@@ -23,3 +25,9 @@ natCmpTotal = impl
       | No contra with (isLTE y_t x_t)
         | Yes _ = notLeq
         | No contra' = let prf = notLte _ _ contra' in void $ contra prf
+
+exampleList : List Nat
+exampleList = [2, 3, 5, 10, 42, 21]
+
+exampleProofTerm : Sorted ExampleOrder.natCmp (ExampleOrder.exampleList) (mergeSort ExampleOrder.natCmp ExampleOrder.exampleList)
+exampleProofTerm = mergeSortIsASort _ natCmpTotal _
